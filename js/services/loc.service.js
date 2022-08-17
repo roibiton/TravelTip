@@ -25,3 +25,6 @@ function getCurrTime() {
     console.log(dateTime)
 }
 
+function addLocation(position,locName){
+    
+}

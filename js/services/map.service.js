@@ -7,9 +7,13 @@ export const mapService = {
 
 // Var that is used throughout this Module (not global)
 var gMap
+var gSelectedLocation={
+    lat:0,
+    lng:0
+}
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap')
+
     return _connectGoogleApi()
         .then(() => {
             console.log('test available')
@@ -20,11 +24,29 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
             })
             console.log('Map!', gMap)
         })
+        .then(() => {
+            addLocListener()
+
+        })
 }
 
-function addMarker(loc) {
-    var marker = new google.maps.Marker({
-        position: loc,
+function addLocListener() {
+    gMap.addListener('click', (mapsMouseEvent) => {
+        const lat = mapsMouseEvent.latLng.lat()
+        const lng = mapsMouseEvent.latLng.lng()
+        const position = { lat, lng }
+        gSelectedLocation = position
+        addMarker(gSelectedLocation)
+        
+            // onAddPlace(position, locationName)
+    })
+}
+
+
+function addMarker() {
+    marker.setMap(null)
+    var marker= new google.maps.Marker({
+        position: gSelectedLocation,
         map: gMap,
         title: 'Hello World!'
     })
