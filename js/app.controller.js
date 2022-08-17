@@ -1,7 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
-
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
@@ -25,9 +24,8 @@ function getPosition() {
     })
 }
 
-function onAddMarker() {
-    console.log('Adding a marker')
-    mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
+function onAddMarker(pos) {
+    mapService.addMarker(pos)
 }
 
 function onGetLocs() {
@@ -54,9 +52,11 @@ function renderLocs(locs) {
 function onGetUserPos() {
     getPosition()
         .then(pos => {
-            console.log('User position is:', pos.coords)
-            document.querySelector('.user-pos').innerText =
-                `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+            var position = mapService.updateLatLng(pos.coords.latitude, pos.coords.longitude)
+            console.log('position',position)
+            // mapService.updateLanLng() = pos.coords.latitude
+            // mapService.gSelectedLocation =  pos.coords.longitude
+            onAddMarker(position)
         })
         .catch(err => {
             console.log('err!!!', err)

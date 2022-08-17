@@ -1,7 +1,8 @@
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    updateLatLng,
 }
 
 
@@ -9,8 +10,12 @@ export const mapService = {
 var gMap
 var gSelectedLocation={
     lat:0,
-    lng:0
+    lng:0,
 }
+var gMarkers = [{position: {lat:0, lng:0},
+    map: gMap,
+    title: 'Hello World!'}]
+
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
 
@@ -35,29 +40,35 @@ function addLocListener() {
         const lat = mapsMouseEvent.latLng.lat()
         const lng = mapsMouseEvent.latLng.lng()
         const position = { lat, lng }
-        gSelectedLocation = position
-        addMarker(gSelectedLocation)
-        
+        addMarker(position)
             // onAddPlace(position, locationName)
     })
 }
 
-
-function addMarker() {
-    marker.setMap(null)
-    var marker= new google.maps.Marker({
+function addMarker(pos) {
+    gSelectedLocation = pos
+    var marker = new google.maps.Marker({
         position: gSelectedLocation,
         map: gMap,
         title: 'Hello World!'
     })
-    return marker
+    gMarkers.push(marker)
+    removeMarker(gMarkers.shift())
+}
+
+function updateLatLng(lat, lng) {
+    gSelectedLocation = {lat, lng}
+    return gSelectedLocation
+}
+
+function removeMarker(marker) {
+    marker.setMap(null)
 }
 
 function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng)
     gMap.panTo(laLatLng)
 }
-
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
