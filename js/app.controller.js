@@ -1,6 +1,7 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
+
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
@@ -8,6 +9,7 @@ window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 
 function onInit() {
+    locService.getCurrTime()
     mapService.initMap()
         .then(() => {
             console.log('Map is ready')
@@ -31,9 +33,22 @@ function onAddMarker() {
 function onGetLocs() {
     locService.getLocs()
         .then(locs => {
-            console.log('Locations:', locs)
-            document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
+            renderLocs(locs)
+            // document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
         })
+}
+
+function renderLocs(locs) {
+    // debugger
+    console.log(locs)
+    const elLocs = document.querySelector('.locs-container')
+    const strHTML = locs.map((loc) => `
+    <article class="loc">
+        <h1>location name: ${loc.name}, lat: ${loc.lat}, lng: ${loc.lng}, created at: ${loc.createAt}</h1>
+    </article>
+    `
+    )
+    elLocs.innerHTML = strHTML.join('')
 }
 
 function onGetUserPos() {
